@@ -33,12 +33,12 @@ $(function () {
   }
   
   // Display current day and existing project
-  function saveSchedleToStorage(schedules) {
+  function saveScheduleToStorage(schedules) {
     localStorage.setItem('schedules', JSON.stringify(schedules));
   }
   
   // Gets project data from local storage and displays it
-  function printScheudleData() {
+  function printSchedule() {
     // clear current schedule on the page
     scheduleDisplayEl.empty();
   
@@ -101,12 +101,12 @@ $(function () {
     const schedules = readSchedulesFromStorage();
     schedules.splice(scheduleIndex, 1, newItem);
     console.log(schedules);
-    saveSchedleToStorage(schedules);
+    saveScheduleToStorage(schedules);
   
   }
 
   displayDate();
-  printScheudleData();
+  printSchedule();
 
   scheduleDisplayEl.on('click', '.saveBtn', handleScheduleSubmit);
 
