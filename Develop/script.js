@@ -5,7 +5,6 @@ $(function () {
 
   const dayDisplayEl = $('#currentDay');
   const scheduleDisplayEl = $('#hour-list');
-  const scheduleInputEl = $('#description');
 
   function displayDate() {
     const today = dayjs().format('dddd, MMMM D');
@@ -17,7 +16,18 @@ $(function () {
     if (schedules) {
       schedules = JSON.parse(schedules);
     } else {
-      schedules = [];
+  /*initiate an array of 9 items */
+      for (var i = 0; i < 9; i += 1) {
+        let text = {
+          text: '',
+          index: i,
+        };
+        if (i == 0) {
+          schedules = [text];
+        } else {
+          schedules.push(text);
+        }
+      }
     }
     return schedules;
   }
@@ -29,34 +39,29 @@ $(function () {
   
   // Gets project data from local storage and displays it
   function printScheudleData() {
-    // clear current projects on the page
+    // clear current schedule on the page
     scheduleDisplayEl.empty();
   
-    // get projects from localStorage
+    // get schedule contents from localStorage
     const schedules = readSchedulesFromStorage();
   
-    // loop through each project and create a row
+    // loop through each schedule item from 9AM and create a row
     for (var i = 0; i < 9; i += 1) {
       const schedule = schedules[i];
       const hours = dayjs().hour(9+i);
       console.log(hours.hour());
       console.log(typeof(hours.hour()));
-      // get date/time for start of today
       const hour = dayjs().hour();
       console.log(hour);
       console.log(typeof(hour));
   
-      // Create row and columns for project
-      var rowEl = $('<div class="row time-block"></div>');
-      var hourEL = $('<div class="col-2 col-md-1 hour text-center py-3"></div>').text(hours.format('hA'));
-      if (schedules[i]) {
-        var textEl = $('<textarea class="col-8 col-md-10 description" rows="3"></textarea>').text(schedule.text);
-      } else {
-        textEl = $('<textarea class="col-8 col-md-10 description" rows="3"></textarea>').text("");
-      }
+      // Create row and columns for the page
+      const rowEl = $('<div class="row time-block"></div>');
+      const hourEL = $('<div class="col-2 col-md-1 hour text-center py-3"></div>').text(hours.format('hA'));
+      const textEl = $('<textarea class="col-8 col-md-10 description" rows="3"></textarea>').text(schedule.text);
   
       // Save the index of the project as a data-* attribute on the button. 
-      var saveEl = $(
+      const saveEl = $(
         '<button class="btn saveBtn col-2 col-md-1" aria-label="save" data-index="' +
           i +
           '"><i class="fas fa-save" aria-hidden="true"></i></button>'
@@ -80,19 +85,22 @@ $(function () {
   // Removes a project from local storage and prints the project data
   function handleScheduleSubmit(event) {
     event.preventDefault();
-  
+
     // read user input from the input
-    const scheduleText = scheduleInputEl.val().trim();
     const scheduleIndex = parseInt($(this).attr('data-index'));
+    const scheduleText = $(this).parent().children("textarea").val();
+    console.log(scheduleText);
+    console.log(typeof(scheduleText));
   
-    var newItem = {
+    const newItem = {
       text: scheduleText,
       index: scheduleIndex,
     };
-  
+    console.log(newItem);
     // add schedule to local storage
     const schedules = readSchedulesFromStorage();
     schedules.splice(scheduleIndex, 1, newItem);
+    console.log(schedules);
     saveSchedleToStorage(schedules);
   
   }
@@ -101,8 +109,7 @@ $(function () {
   printScheudleData();
 
   scheduleDisplayEl.on('click', '.saveBtn', handleScheduleSubmit);
-  console.log(scheduleDisplayEl);
-  console.log(dayjs().hour(9));
+
 
 
   // TODO: Add a listener for click events on the save button. This code should
