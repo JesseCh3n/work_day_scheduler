@@ -12,11 +12,14 @@ $(function () {
   }
 
   function readSchedulesFromStorage() {
-    var schedules = localStorage.getItem('schedules');
-    if (schedules) {
+    let schedules = localStorage.getItem('schedules');
+    let today = dayjs().date();
+    let oldDate = localStorage.getItem('date');
+    if (schedules && oldDate == today) {
       schedules = JSON.parse(schedules);
     } else {
   /*initiate an array of 9 items */
+      localStorage.setItem('date', today);
       for (var i = 0; i < 9; i += 1) {
         let text = {
           text: '',
